@@ -1,4 +1,5 @@
 from belong import db
+from datetime import datetime
 
 class Question(db.Model):
     __tablename__ = 'question'
