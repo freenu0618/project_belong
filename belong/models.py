@@ -32,6 +32,7 @@ class LonelyPrediction(db.Model):
     - predicted_value : ML 모델이 예측한 고독사 인원수
     - actual_value    : 실제 관측값 (있다면 입력, 없으면 NULL)
     """
+    # __bind_key__ = 'ml'
     __tablename__ = "lonely_prediction"
 
     id = db.Column(

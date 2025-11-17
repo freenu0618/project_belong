@@ -34,6 +34,10 @@ def create_app():
     app.register_blueprint(auth_views.bp)      # ✅ 계정/로그인 관련
     app.register_blueprint(predict_views.bp)   # ✅ /predict URL 담당
 
+    import os
+    print(">>> TEMPLATE SEARCH PATH:", app.jinja_loader.searchpath)
+
+
     return app
 
 
