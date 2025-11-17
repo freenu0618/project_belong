@@ -32,7 +32,7 @@
         </div>
 
         <div class="col-12">
-            <button class="btn btn-primary mt-2">예측 실행</button>
+            <button class="btn btn-primary mt-2">자료 검색</button>
         </div>
     </form>
 
@@ -41,26 +41,26 @@
     <div class="card mt-5 shadow-sm">
         <div class="card-body">
 
-            <h5 class="card-title">예측 결과</h5>
+            <h5 class="card-title">실측 자료</h5>
 
             <p class="card-text">
                 <b>{{ prediction.gu }}</b>  
                 <b>{{ prediction.year }}년</b>
-                고독사 예측 인원수는  
-                <b>{{ "%.2f"|format(prediction.predicted_value) }}</b> 명입니다.
+                고독사 인원수는  
+                <b>{{ "%.0f"|format(prediction.predicted_value) }}</b> 명입니다.
             </p>
 
             {% if prediction.actual_value %}
             <p class="text-muted">
-                실제 발생 수: {{ prediction.actual_value }}
+                <!-- 실제 발생 수: {{ prediction.actual_value }} -->
             </p>
             {% endif %}
 
-            {% if from_cache %}
+            <!-- {% if from_cache %}
             <span class="badge bg-success">DB 캐시값</span>
             {% else %}
             <span class="badge bg-primary">새 예측값</span>
-            {% endif %}
+            {% endif %} -->
 
         </div>
     </div>

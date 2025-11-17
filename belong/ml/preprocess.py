@@ -10,7 +10,6 @@ pybo.ml.preprocess
   오프라인 학습/연구용으로만 사용.
 """
 
-from __future__ import annotations
 
 from typing import Union
 from pathlib import Path

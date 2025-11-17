@@ -1,18 +1,45 @@
-<table class="table table-sm table-bordered">
-  <thead>
-    <tr>
-      <th>연도</th>
-      <th>예측 인원수(명, 반올림)</th>
-      <th>모델 원래 값(소수)</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in table_records %}
-      <tr>
-        <td>{{ row["연도"] }}</td>
-        <td>{{ row["예측값_명"] }}</td>
-        <td>{{ "%.2f"|format(row["예측값"]) }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>📊 1인 고령가구 고독사 장기 예측 (2026~2075)</h2>
+    <hr>
+
+    <form method="POST">
+        <label for="gu">자치구 선택:</label>
+        <select name="gu" class="form-control" style="max-width: 300px;">
+            {% for gu in gu_list %}
+                <option value="{{ gu }}" {% if gu == selected_gu %}selected{% endif %}>{{ gu }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary mt-2">조회</button>
+    </form>
+
+    {% if records %}
+    <h4 class="mt-4">{{ selected_gu }} (2026~2075)</h4>
+
+    <!-- 예측값 표 -->
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>연도</th>
+                <th>예측값</th>
+                <th>예측값(명)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in records %}
+            <tr>
+                <td>{{ row['연도'] }}</td>
+                <td>{{ row['예측값']|round(2) }}</td>
+                <td>{{ row['예측값_명'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,46 +1,103 @@
-# belong/views/predict_views.py
-
-from flask import Blueprint, render_template, request, current_app
+from datetime import datetime
+from flask import Blueprint, render_template, request, flash, current_app
+from werkzeug.utils import redirect
 from pathlib import Path
 import pandas as pd
+
+from .. import db
+from ..models import LonelyPrediction
+from ..ml.loader import available_regions, available_years, predict_for, get_future_curve_for_gu
 
 bp = Blueprint("predict", __name__, url_prefix="/predict")
 
 # ==========================================
-# 1) 미래 예측 CSV 로드 (2026~2075)
-#    - Jupyter/노트북에서 미리 만들어둔
-#      future_pred_2026_2075_v1_1_linear.csv 사용
+# 1) 현재년도 예측 (ML 모델)
 # ==========================================
 
-# 전역 캐시용 (매 요청마다 파일 다시 안 읽도록)
-_FUTURE_DF = None
+@bp.route("/", methods=("GET", "POST"))
+def index():
+    """
+    /predict/ - ML 기반 고독사 예측
+    """
+    regions = available_regions()
+    years = available_years()
 
-# CSV 안에서 "예측값" 컬럼 이름
-#   - 네 CSV에서 컬럼명이 다르면 여기만 바꾸면 됨 (예: "y_pred")
+    prediction = None
+    from_cache = False
+
+    if request.method == "POST":
+        gu = request.form.get("gu")
+        year_raw = request.form.get("year")
+
+        if not gu or not year_raw:
+            flash("구와 연도를 모두 선택해 주세요.")
+        else:
+            try:
+                year = int(year_raw)
+            except ValueError:
+                flash("연도 값이 올바르지 않습니다.")
+                return render_template(
+                    "predict/form.html",
+                    regions=regions,
+                    years=years,
+                    prediction=None,
+                    from_cache=False,
+                )
+
+            # DB 캐시 조회
+            pred_row = LonelyPrediction.query.filter_by(gu=gu, year=year).first()
+
+            if pred_row:
+                prediction = pred_row
+                from_cache = True
+            else:
+                # ML 예측 호출
+                result = predict_for(gu, year)
+
+                prediction = LonelyPrediction(
+                    gu=gu,
+                    year=year,
+                    predicted_value=result["y_pred"],
+                    actual_value=result.get("y_true"),
+                    created_at=datetime.now(),
+                )
+                db.session.add(prediction)
+                db.session.commit()
+                from_cache = False
+
+    return render_template(
+        "predict/form.html",
+        regions=regions,
+        years=years,
+        prediction=prediction,
+        from_cache=from_cache,
+    )
+
+# ==========================================
+# 2) 미래 예측 (2026~2075 CSV 기반)
+# ==========================================
+
+_FUTURE_DF = None
 PRED_COL = "예측값"
 
 
 def _load_future_df() -> pd.DataFrame:
-    """미래 예측 CSV를 한 번만 로드해서 캐시에 담아두는 헬퍼."""
+    """미래 예측 CSV를 캐싱하여 로드"""
     global _FUTURE_DF
 
     if _FUTURE_DF is not None:
         return _FUTURE_DF
 
-    # Flask 앱(root_path) 기준: belong/ml/future_pred_*.csv
     csv_path = Path(current_app.root_path) / "ml" / "future_pred_2026_2075_v1_1_linear.csv"
 
     df = pd.read_csv(csv_path)
 
-    # 최소 컬럼 체크
     required = {"구", "연도", PRED_COL}
     if not required.issubset(df.columns):
         raise RuntimeError(
-            f"미래 예측 CSV에 필요한 컬럼이 없습니다. "
-            f"필요: {required}, 현재: {set(df.columns)}"
+            f"미래 예측 CSV에 필요한 컬럼이 없습니다. 필요: {required}, 현재: {set(df.columns)}"
         )
 
-    # 연도 타입 정리
     df["연도"] = pd.to_numeric(df["연도"], errors="coerce").astype(int)
 
     _FUTURE_DF = df
@@ -48,20 +105,11 @@ def _load_future_df() -> pd.DataFrame:
 
 
 def _future_regions():
-    """미래 예측이 가능한 자치구 목록 반환."""
     df = _load_future_df()
     return sorted(df["구"].dropna().unique().tolist())
 
 
 def _future_series_for_gu(gu: str):
-    """
-    특정 구에 대해 2026~2075년 예측 시계열 반환.
-
-    return:
-        years       : [2026, 2027, ..., 2075]
-        values      : [명 단위 정수 리스트]
-        table_rows  : 템플릿에서 표로 쓰기 좋은 dict 리스트
-    """
     df = _load_future_df()
 
     df_gu = df[df["구"] == gu].copy()
@@ -69,14 +117,11 @@ def _future_series_for_gu(gu: str):
         return [], [], []
 
     df_gu = df_gu.sort_values("연도")
-
-    # 명 단위 반올림 컬럼 추가
     df_gu["예측값_명"] = df_gu[PRED_COL].round().astype(int)
 
     years = df_gu["연도"].tolist()
     values = df_gu["예측값_명"].tolist()
 
-    # 표에 필요한 컬럼만 dict로 변환
     table_rows = df_gu[["연도", PRED_COL, "예측값_명"]].rename(
         columns={PRED_COL: "예측값"}
     ).to_dict(orient="records")
@@ -84,34 +129,29 @@ def _future_series_for_gu(gu: str):
     return years, values, table_rows
 
 
-# ==========================================
-# 2) 뷰 함수: /predict/future
-#    - 구만 선택 → 2026~2075 예측 곡선 + 표 렌더링
-# ==========================================
 
 @bp.route("/future", methods=["GET", "POST"])
 def future():
     """
-    1인 고령가구 고독사 장기 예측 서비스 뷰 (2026~2075년)
+    2026~2075년 장기 예측 서비스 전용 뷰
+    - 연도 선택 없음
+    - 구 선택만 존재
     """
-    gu_list = _future_regions()
-
-    # 기본 선택 구: 첫 번째 구
+    gu_list = available_regions()   # 25개 구
     selected_gu = gu_list[0] if gu_list else None
 
     if request.method == "POST":
-        # 폼에서 넘어온 구 값으로 갱신
         selected_gu = request.form.get("gu") or selected_gu
 
-    years, values, table_rows = ([], [], [])
-    if selected_gu is not None:
-        years, values, table_rows = _future_series_for_gu(selected_gu)
+    # 특정 구의 미래 예측 50년 데이터
+    records = []
+    if selected_gu:
+        records = get_future_curve_for_gu(selected_gu)  # [{연도, 예측값, 예측값_명}, ...]
 
+    # 템플릿 렌더링
     return render_template(
         "predict/future_predict.html",
         gu_list=gu_list,
         selected_gu=selected_gu,
-        years=years,
-        values=values,
-        table_records=table_rows,
+        records=records
     )
