@@ -1,11 +1,18 @@
 {% extends "base.html" %}
+{% block extra_style %}
+<style>
+  body {
+    background-color: #f4e9d8 !important;  /* 밝은 베이지색 */
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
 <!-- Hero Carousel -->
 <div id="belongCarousel" class="carousel slide" data-bs-ride="carousel">
 
-  <!-- 인디케이터 (아래 점 아이콘) -->
+  <!-- 인디케이터 -->
   <div class="carousel-indicators">
     {% for i in range(5) %}
       <button type="button"
@@ -18,7 +25,6 @@
 
   <!-- 이미지 슬라이드 -->
   <div class="carousel-inner">
-
     {% for i in range(1, 6) %}
     <div class="carousel-item {% if i == 1 %}active{% endif %}">
       <img src="{{ url_for('static', filename='image/carousel/c' ~ i ~ '.jpg') }}"
@@ -26,7 +32,6 @@
            style="object-fit:cover; height:450px;">
     </div>
     {% endfor %}
-
   </div>
 
   <!-- 이전/다음 버튼 -->
@@ -43,7 +48,7 @@
 </div>
 
 <!-- 서비스 소개 섹션 -->
-<div class="container py-5">
+<div class="container pt-5 pb-0">   <!-- ← 여기 수정됨 -->
   <h2 class="text-center mb-4">Belong 서비스</h2>
 
   <div class="row g-4">
