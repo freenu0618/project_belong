@@ -4,6 +4,11 @@ pybo.ml.preprocess
 - Dataset_ML.csv 를 로드하고
 - 고독사 타깃(값)을 기준으로 lag/roll 및 파생 피처를 생성하는 모듈
 """
+"""
+...
+- v1.x 서비스에서는 Flask에서 직접 사용하지 않고,
+  오프라인 학습/연구용으로만 사용.
+"""
 
 from __future__ import annotations
 

@@ -6,6 +6,11 @@ pybo.ml.train_lonely_death
 - XGBoost Regressor + StandardScaler + ColumnTransformer 파이프라인 학습
 - lonely_death_model.pkl 로 저장
 """
+"""
+...
+- v1.x Flask 서비스에서는 미래 예측 CSV를 사용하므로,
+  이 스크립트는 모델 재학습/연구용으로 사용.
+"""
 
 from __future__ import annotations
 

@@ -40,7 +40,7 @@ NUMERIC_FEATURES = [
 REGION_FEATURES = [
     "강남구","강동구","강북구","강서구","관악구","광진구","구로구","금천구",
     "노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구",
-    "성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중랑구",
+    "성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중랑구","중구"
 ]
 
 # v0.4에서 추가로 만든 파생 피처들 (참고용)
@@ -48,3 +48,5 @@ ADDITIONAL_FEATURES = ["lag_1", "lag_2", "roll_3", "인구x노령화", "노인�
 
 # 최종 학습/예측에 투입할 컬럼 (X)
 FINAL_FEATURES = NUMERIC_FEATURES + REGION_FEATURES
+
+FUTURE_PRED_PATH = PACKAGE_ROOT / "future_pred_2026_2075_v1_1_linear.csv"

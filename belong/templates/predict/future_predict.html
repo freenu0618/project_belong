@@ -1,0 +1,18 @@
+<table class="table table-sm table-bordered">
+  <thead>
+    <tr>
+      <th>연도</th>
+      <th>예측 인원수(명, 반올림)</th>
+      <th>모델 원래 값(소수)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in table_records %}
+      <tr>
+        <td>{{ row["연도"] }}</td>
+        <td>{{ row["예측값_명"] }}</td>
+        <td>{{ "%.2f"|format(row["예측값"]) }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
