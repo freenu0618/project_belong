@@ -1,4 +1,4 @@
-from belong import db
+from pybo import db
 from datetime import datetime
 
 class Question(db.Model):

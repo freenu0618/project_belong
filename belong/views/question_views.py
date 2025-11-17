@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request,url_for
-from belong.models import Question
+from ..models import Question
 from ..forms import QuestionForm,AnswerForm
 from datetime import datetime
 from werkzeug.utils import redirect
@@ -7,7 +7,7 @@ from .. import db
 
 bp = Blueprint('question',__name__, url_prefix='/question')
 
-@bp.route('/list')
+@bp.route('/list/')
 def _list():
     page = request.args.get('page', type=int, default=1)
     question_list = Question.query.order_by(Question.create_date.desc())
