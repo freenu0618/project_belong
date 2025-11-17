@@ -48,3 +48,5 @@ ADDITIONAL_FEATURES = ["lag_1", "lag_2", "roll_3", "인구x노령화", "노인�
 
 # 최종 학습/예측에 투입할 컬럼 (X)
 FINAL_FEATURES = NUMERIC_FEATURES + REGION_FEATURES
+
+FUTURE_PRED_PATH = PACKAGE_ROOT / "future_pred_2026_2075_v1_1_linear.csv"

@@ -1,52 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Bulletin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap + Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <title>BeLong</title>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <a href="{{ url_for('main.index') }}" class="navbar-brand">Bulletin</a>
 
-    <button class="navbar-toggler ml-auto"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- 공통 네비게이션 -->
+    {% include "navbar.html" %}
 
-    <div class="collapse navbar-collapse flex-grow-0" id="navbarNav">
-        {% if g.user %}
-        <ul class="navbar-nav">
-            <!-- ★ 로그인 상태에서도 보이는 고독사 예측 메뉴 -->
-            <li class="nav-item">
-                <a href="{{ url_for('predict.index') }}" class="nav-link">고독사 예측</a>
-            </li>
-            <!-- ★ 오른쪽에 유저명 + 로그아웃 -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.logout') }}">
-                    {{ g.user.username }} (로그아웃)
-                </a>
-            </li>
-        </ul>
-        {% else %}
-        <ul class="navbar-nav">
-            <!-- ★ 비로그인 상태에서도 보이는 고독사 예측 메뉴 -->
-            <li class="nav-item">
-                <a href="{{ url_for('predict.index') }}" class="nav-link">고독사 예측</a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ url_for('auth.signup') }}" class="nav-link">계정생성</a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ url_for('auth.login') }}" class="nav-link">로그인</a>
-            </li>
-        </ul>
-        {% endif %}
+    <!-- 페이지별 콘텐츠 영역 -->
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
     </div>
-</nav>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+    {% block script %}
+    {% endblock %}
+
 </body>
 </html>
