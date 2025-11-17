@@ -1,55 +1,85 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="hero">
-  <div class="container">
-    <h1>Belong</h1>
-    <p>1인 고령가구의 고독사 위험을 데이터로 예측하는 서비스</p>
-    <p>지역별 · 연도별 통계와 머신러닝을 활용해, 위험 징후를 미리 발견합니다.</p>
 
-    <div class="mt-4">
-      <a href="{{ url_for('predict.index') }}" class="btn btn-light btn-lg me-2">
-        예측하러 가기
-      </a>
-      <a href="{{ url_for('question._list') }}" class="btn btn-outline-light btn-lg">
-        문의사항 남기기
-      </a>
-    </div>
+<!-- Hero Carousel -->
+<div id="belongCarousel" class="carousel slide" data-bs-ride="carousel">
+
+  <!-- 인디케이터 (아래 점 아이콘) -->
+  <div class="carousel-indicators">
+    {% for i in range(5) %}
+      <button type="button"
+              data-bs-target="#belongCarousel"
+              data-bs-slide-to="{{ i }}"
+              {% if i == 0 %}class="active"{% endif %}>
+      </button>
+    {% endfor %}
   </div>
+
+  <!-- 이미지 슬라이드 -->
+  <div class="carousel-inner">
+
+    {% for i in range(1, 6) %}
+    <div class="carousel-item {% if i == 1 %}active{% endif %}">
+      <img src="{{ url_for('static', filename='image/carousel/c' ~ i ~ '.jpg') }}"
+           class="d-block w-100"
+           style="object-fit:cover; height:450px;">
+    </div>
+    {% endfor %}
+
+  </div>
+
+  <!-- 이전/다음 버튼 -->
+  <button class="carousel-control-prev" type="button"
+          data-bs-target="#belongCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+
+  <button class="carousel-control-next" type="button"
+          data-bs-target="#belongCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
 </div>
 
+<!-- 서비스 소개 섹션 -->
 <div class="container py-5">
+  <h2 class="text-center mb-4">Belong 서비스</h2>
+
   <div class="row g-4">
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
+      <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title">데이터 기반 분석</h5>
-          <p class="card-text">
-            행정구별 인구·소득·복지 데이터와 실제 고독사 통계를 이용해 위험도를 정량적으로 분석합니다.
+          <h5>데이터 기반 분석</h5>
+          <p class="text-muted">
+            수년간의 1인 가구, 노령 인구, 저소득 지표를 기반으로 고독사 위험을 정량화합니다.
           </p>
         </div>
       </div>
     </div>
+
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
+      <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title">머신러닝 예측</h5>
-          <p class="card-text">
-            훈련된 회귀/부스팅 모델을 활용하여 향후 고독사 발생 가능성을 예측합니다.
+          <h5>머신러닝 예측</h5>
+          <p class="text-muted">
+            실제 발생 수를 반영한 회귀 모델 기반 예측 서비스를 제공합니다.
           </p>
         </div>
       </div>
     </div>
+
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
+      <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title">문의 및 의견 수렴</h5>
-          <p class="card-text">
-            게시판을 통해 아이디어·피드백을 공유하며 모델과 서비스를 함께 개선해 나갑니다.
+          <h5>문의 및 개선</h5>
+          <p class="text-muted">
+            게시판을 통해 의견을 공유하고 서비스를 함께 발전시켜 나갑니다.
           </p>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 {% endblock %}

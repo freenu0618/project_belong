@@ -1,46 +1,41 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <div class="container-fluid">
 
+    <!-- 로고 -->
     <a class="navbar-brand" href="{{ url_for('main.index') }}">
+      <img src="{{ url_for('static', filename='image/login.webp') }}"
+           alt="Belong Logo"
+           style="height:38px; margin-right:10px; border-radius:4px;">
       <strong>Belong</strong>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false" aria-label="Toggle navigation">
+            data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
 
-        <!-- 예측 서비스 -->
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('predict.index') }}">
-            예측서비스
-          </a>
+          <a class="nav-link" href="{{ url_for('predict.index') }}">예측서비스</a>
         </li>
 
-        <!-- 게시판 -->
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('question._list') }}">
-            문의사항(게시판)
-          </a>
+          <a class="nav-link" href="{{ url_for('question._list') }}">문의사항</a>
         </li>
 
-        <!-- 로그인 / 회원가입 -->
         {% if g.user %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">로그아웃</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.logout') }}">로그아웃</a>
+        </li>
         {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.signup') }}">회원가입</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.signup') }}">회원가입</a>
+        </li>
         {% endif %}
 
       </ul>
