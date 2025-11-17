@@ -12,7 +12,7 @@ from pathlib import Path
 PACKAGE_ROOT = Path(__file__).resolve().parent
 
 # 프로젝트 루트: flask_basic/ (pybo/ml → pybo → flask_basic)
-PROJECT_ROOT = PACKAGE_ROOT.parent.parent
+PROJECT_ROOT = PACKAGE_ROOT
 
 # CSV 데이터 경로 (flask_basic/Dataset_ML.csv 기준)
 DATA_PATH = PROJECT_ROOT / "Dataset_ML.csv"
