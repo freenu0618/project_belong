@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block extra_style %}
+<style>
+  body {
+    background-color: #f4e9d8 !important;  /* 밝은 베이지색 */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Carousel -->
+<div id="belongCarousel" class="carousel slide" data-bs-ride="carousel">
+
+  <!-- 인디케이터 -->
+  <div class="carousel-indicators">
+    {% for i in range(5) %}
+      <button type="button"
+              data-bs-target="#belongCarousel"
+              data-bs-slide-to="{{ i }}"
+              {% if i == 0 %}class="active"{% endif %}>
+      </button>
+    {% endfor %}
+  </div>
+
+  <!-- 이미지 슬라이드 -->
+  <div class="carousel-inner">
+    {% for i in range(1, 6) %}
+    <div class="carousel-item {% if i == 1 %}active{% endif %}">
+      <img src="{{ url_for('static', filename='image/carousel/c' ~ i ~ '.jpg') }}"
+           class="d-block w-100"
+           style="object-fit:cover; height:450px;">
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- 이전/다음 버튼 -->
+  <button class="carousel-control-prev" type="button"
+          data-bs-target="#belongCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+
+  <button class="carousel-control-next" type="button"
+          data-bs-target="#belongCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
+</div>
+
+<!-- 서비스 소개 섹션 -->
+<div class="container pt-5 pb-0">   <!-- ← 여기 수정됨 -->
+  <h2 class="text-center mb-4">Belong 서비스</h2>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>데이터 기반 분석</h5>
+          <p class="text-muted">
+            수년간의 1인 가구, 노령 인구, 저소득 지표를 기반으로 고독사 위험을 정량화합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>머신러닝 예측</h5>
+          <p class="text-muted">
+            실제 발생 수를 반영한 회귀 모델 기반 예측 서비스를 제공합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5>문의 및 개선</h5>
+          <p class="text-muted">
+            게시판을 통해 의견을 공유하고 서비스를 함께 발전시켜 나갑니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

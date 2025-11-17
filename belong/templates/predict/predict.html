@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">고독사 위험 예측 서비스</h2>
+
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label for="gu" class="form-label">자치구 선택</label>
+      <select id="gu" name="gu" class="form-select" required>
+        <option value="">-- 선택 --</option>
+        {% for name in [
+          "강남구","강동구","강북구","강서구","관악구","광진구","구로구","금천구",
+          "노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구",
+          "성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구"
+        ] %}
+        <option value="{{ name }}" {% if gu == name %}selected{% endif %}>
+          {{ name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label for="year" class="form-label">예측 연도</label>
+      <input
+        type="number"
+        class="form-control"
+        id="year"
+        name="year"
+        min="2017"
+        max="2050"
+        value="{{ year or 2023 }}"
+        required
+      >
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">
+        예측 실행
+      </button>
+    </div>
+  </form>
+
+  {% if prediction %}
+    <div class="mt-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">예측 결과</h5>
+          <p class="card-text">
+            {{ prediction }}
+          </p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

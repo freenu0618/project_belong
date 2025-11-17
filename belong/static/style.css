@@ -5,3 +5,10 @@ textarea {
 input[type=submit] {
     margin-top:10px;
 }
+
+@media (max-width: 768px) {
+    #belongCarousel,
+    .belong-carousel-img {
+        height: 25vh;
+    }
+}
